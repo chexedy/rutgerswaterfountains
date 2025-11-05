@@ -38,7 +38,7 @@ export default function Map() {
         mapRef.current = new maplibregl.Map({
             container: mapContainer.current,
             center: [-74.450655, 40.4943125],
-            style: "https://tiles.openfreemap.org/styles/positron",
+            style: "https://tiles.openfreemap.org/styles/liberty",
             maxBounds: bounds
         });
     }, []);

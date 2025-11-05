@@ -1,3 +1,42 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+.inter-800 {
+    font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 800;
+    font-style: normal;
+}
+
+:root {
+    /* Opposite of background */
+    --text-color-one: rgb(15, 15, 15);
+    /* Always white*/
+    --text-color-two: rgb(240, 240, 240);
+    --background-color: rgb(240, 240, 240);
+    --primary-color: rgb(204, 0, 51);
+    --secondary-color: rgb(102, 102, 102);
+    --accent-color: rgb(204, 0, 51);
+
+    --heading-font: "Inter", sans-serif;
+    --heading-weight: 800,
+}
+
+:root[data-theme="dark"] {
+    --text-color-one: rgb(240, 240, 240);
+    --text-color-two: rgb(240, 240, 240);
+    --background-color: rgb(15, 15, 15);
+    --primary-color: rgb(255, 51, 102);
+    --secondary-color: rgb(153, 153, 153);
+    --accent-color: rgb(255, 51, 102);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    font-size: 100%;
+    font-family: var(--heading-font);
+    vertical-align: baseline;
+    background: transparent;
+}

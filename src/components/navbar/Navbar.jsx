@@ -1,43 +1,50 @@
-import { Link } from "react-router-dom";
 import "./Navbar.css"
+import { MdLightMode, MdOutlineDarkMode } from "react-icons/md";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 export default function Navbar() {
-    return (
-        <nav className="absolute top-0 left-0 w-full bg-white/40 backdrop-blur-md border-b border-gray-200 z-50">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-between items-center h-16">
-                    <Link to="/" className="text-2xl font-semibold text-black-700 drop-shadow-sm">
-                        RU Water Fountains
-                    </Link>
+    const [theme, setTheme] = useState(() => {
+        const savedTheme = localStorage.getItem("theme");
+        if (savedTheme) return savedTheme;
 
-                    <div className="flex space-x-6">
-                        <Link
-                            to="/"
-                            className="text-gray-900 hover:text-blue-700 font-medium transition"
-                        >
-                            Home
-                        </Link>
-                        <Link
-                            to="/submit"
-                            className="text-gray-900 hover:text-blue-700 font-medium transition"
-                        >
-                            Submit
-                        </Link>
-                        <Link
-                            to="/about"
-                            className="text-gray-900 hover:text-blue-700 font-medium transition"
-                        >
-                            About
-                        </Link>
-                        <Link
-                            to="/profile"
-                            className="text-gray-900 hover:text-blue-700 font-medium transition"
-                        >
-                            Profile
-                        </Link>
-                    </div>
-                </div>
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        return prefersDark ? "dark" : "light";
+    });
+
+    const [menuOpen, setMenuOpen] = useState(false);
+
+    useEffect(() => {
+        document.documentElement.setAttribute("data-theme", theme);
+        localStorage.setItem("theme", theme);
+    }, [theme]);
+
+    const toggleTheme = () => setTheme(prev => (prev === "light" ? "dark" : "light"));
+
+    return (
+        <div className="navbar">
+            <div className="title">
+                <h1>
+                    <span>RU</span>
+                </h1>
             </div>
-        </nav>
+
+            <div className="hamburger" onClick={() => setMenuOpen(prev => !prev)}>
+                <div className={`bar ${menuOpen ? "open" : ""}`}></div>
+                <div className={`bar ${menuOpen ? "open" : ""}`}></div>
+                <div className={`bar ${menuOpen ? "open" : ""}`}></div>
+            </div>
+
+            <div className={`buttons ${menuOpen ? "open" : ""}`}>
+                <Link to="/" onClick={() => setMenuOpen(false)} className="buttons-link">Home</Link>
+                <Link to="/submit" onClick={() => setMenuOpen(false)} className="buttons-link">Submit</Link>
+                <Link to="/profile" onClick={() => setMenuOpen(false)} className="buttons-link">Profile</Link>
+                <Link to="/about" onClick={() => setMenuOpen(false)} className="buttons-link">About</Link>
+
+                <button className="theme-toggle" onClick={toggleTheme}>
+                    {theme === "light" ? <MdLightMode /> : <MdOutlineDarkMode />}
+                </button>
+            </div>
+        </div>
     );
 }
