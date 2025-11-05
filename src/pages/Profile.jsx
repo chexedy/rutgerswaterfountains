@@ -1,3 +1,4 @@
+import "./Profile.css";
 import { Navbar } from "../components";
 
 export default function Profile() {
