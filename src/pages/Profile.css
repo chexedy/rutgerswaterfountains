@@ -1,5 +1,22 @@
+body {
+    background-color: var(--background-color);
+    overflow-y: auto;
+}
+
 .profile {
     width: 100%;
-    height: 100vh;
-    background-color: var(--background-color);
+    height: auto;
+    padding-top: 15vh;
+}
+
+.header-one::before {
+    content: "Your ";
+    color: var(--primary-color);
+}
+
+.google-login {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 2.5vh;
 }

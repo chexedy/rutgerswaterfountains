@@ -40,3 +40,15 @@
     vertical-align: baseline;
     background: transparent;
 }
+
+.header-one {
+    color: var(--text-color-one);
+    text-align: center;
+    font-size: 10vh;
+}
+
+.header-two {
+    color: var(--text-color-one);
+    text-align: center;
+    font-size: 4vh;
+}

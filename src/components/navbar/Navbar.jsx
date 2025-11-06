@@ -1,33 +1,20 @@
-import "./Navbar.css"
-import { MdLightMode, MdDarkMode } from "react-icons/md";
-import { useEffect, useState } from "react";
+import "./Navbar.css";
 import { Link } from "react-router-dom";
+
+import { MdLightMode, MdDarkMode } from "react-icons/md";
 import { FaGithub } from "react-icons/fa6";
 
+import { useState } from "react";
+import { useTheme } from "../../context/ThemeContext";
+
 export default function Navbar() {
-    const [theme, setTheme] = useState(() => {
-        const savedTheme = localStorage.getItem("theme");
-        if (savedTheme) return savedTheme;
-
-        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        return prefersDark ? "dark" : "light";
-    });
-
+    const { theme, toggleTheme } = useTheme();
     const [menuOpen, setMenuOpen] = useState(false);
-
-    useEffect(() => {
-        document.documentElement.setAttribute("data-theme", theme);
-        localStorage.setItem("theme", theme);
-    }, [theme]);
-
-    const toggleTheme = () => setTheme(prev => (prev === "light" ? "dark" : "light"));
 
     return (
         <div className="navbar">
             <div className="title">
-                <h1>
-                    <span>RU</span>
-                </h1>
+                <h1><span>RU</span></h1>
             </div>
 
             <div className="hamburger" onClick={() => setMenuOpen(prev => !prev)}>
@@ -46,7 +33,7 @@ export default function Navbar() {
                     {theme === "light" ? <MdLightMode /> : <MdDarkMode />}
                 </button>
 
-                <a href="https://github.com/chexedy/rutgerswaterfountains" target="_blank" rel="noopener noreferrer" aria-label="Open the website's GitHub Repository">
+                <a href="https://github.com/chexedy/rutgerswaterfountains" target="_blank" rel="noopener noreferrer">
                     <FaGithub />
                 </a>
             </div>

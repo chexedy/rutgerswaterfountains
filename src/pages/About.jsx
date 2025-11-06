@@ -3,8 +3,11 @@ import { Navbar } from "../components";
 
 export default function About() {
     return (
-        <div className="about">
+        <div>
             <Navbar />
+            <div className="about">
+                <h1 className="header">About</h1>
+            </div>
         </div>
     )
 }
