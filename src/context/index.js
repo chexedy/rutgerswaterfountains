@@ -1,1 +1,2 @@
-export { default } from "./ThemeContext.jsx";
+export { ThemeContext } from "./ThemeContext.jsx";
+export { AuthContext } from "./AuthContext.jsx";
