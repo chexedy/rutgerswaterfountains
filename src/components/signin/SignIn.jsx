@@ -22,13 +22,14 @@ export default function SignIn() {
 
     return (
         <div>
-            <h2 className="header-two">{message}</h2>
+            <h2 className="header-two signin-header">{message}</h2>
             <div className="google-login">
                 <GoogleLogin
                     onSuccess={(credentialResponse) => {
                         const jwt = credentialResponse.credential;
                         const decoded = jwtDecode(jwt);
                         const email = decoded.email;
+                        console.log(decoded);
 
                         if (email.endsWith("@scarletmail.rutgers.edu")) {
                             setMessage("Invalid email. Please sign in with your ScarletMail (netid@scarletmail.rutgers.edu).");
@@ -42,6 +43,7 @@ export default function SignIn() {
                             name: decoded.name,
                             picture: decoded.picture,
                         });
+
                     }}
                     onError={() => {
                         setMessage("Error signing in. Please try again and contact me on GitHub if the error persists.");
@@ -50,7 +52,6 @@ export default function SignIn() {
                     shape="square"
                     width={width}
                     theme={theme === "light" ? "filled_black" : "outline"}
-                    auto_select={true}
                 />
             </div>
         </div>

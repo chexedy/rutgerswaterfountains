@@ -41,6 +41,11 @@
     background: transparent;
 }
 
+body {
+    background-color: var(--background-color);
+    overflow-y: auto;
+}
+
 .header-one {
     color: var(--text-color-one);
     text-align: center;
@@ -48,13 +53,39 @@
 }
 
 .header-two {
+    margin: 0;
     color: var(--text-color-one);
     text-align: center;
-    font-size: 4vh;
+    font-size: 5vh;
 }
 
 .header-three {
     color: var(--text-color-one);
     text-align: center;
-    font-size: 1vh;
+    font-size: 2.5vh;
+}
+
+.google-login {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 2.5vh;
+}
+
+.google-logout {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2.5vh;
+    margin-bottom: 20vh;
+}
+
+@media screen and (max-width: 767px) {
+    .header-one {
+        font-size: clamp(3.5rem, 10vw, 8.5vh);
+    }
+
+    .header-two {
+        font-size: clamp(2rem, 8vw, 5vh);
+    }
 }

@@ -1,15 +1,10 @@
-body {
-    background-color: var(--background-color);
-    overflow-y: auto;
-}
-
 .about {
     width: 100%;
     height: auto;
     padding-top: 15vh;
 }
 
-.header {
+.about-header {
     color: var(--text-color-one);
     text-align: center;
     font-size: 10vh;

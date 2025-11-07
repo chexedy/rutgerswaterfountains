@@ -6,7 +6,7 @@ export default function About() {
         <div>
             <Navbar />
             <div className="about">
-                <h1 className="header">About</h1>
+                <h1 className="about-header">About</h1>
             </div>
         </div>
     )

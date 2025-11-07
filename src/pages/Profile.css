@@ -1,22 +1,88 @@
-body {
-    background-color: var(--background-color);
-    overflow-y: auto;
-}
-
 .profile {
     width: 100%;
     height: auto;
     padding-top: 15vh;
 }
 
-.header-one::before {
+.profile-header-one::before {
     content: "Your ";
     color: var(--primary-color);
 }
 
-.google-login {
+.profile-user {
     display: flex;
     justify-content: center;
     align-items: center;
+    gap: 1rem;
     padding-top: 2.5vh;
+}
+
+.profile-user img {
+    width: 5vh;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.profile-header-two {
+    padding-top: 2.5vh;
+}
+
+.profile-header-three {
+    padding-top: 2.5vh;
+    padding-left: 2.5vh;
+    padding-right: 2.5vh;
+}
+
+.card-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.table-card {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 1vh;
+    background-color: var(--text-color-one);
+    color: var(--background-color);
+    padding: 1.5vh;
+    border-radius: 1vh;
+    margin: 1.5vh auto;
+    width: 85%;
+    max-width: 600px;
+    word-break: break-word;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0.8vh;
+}
+
+.label {
+    font-weight: 700;
+    font-size: 2vh;
+}
+
+.value {
+    font-size: 1.9vh;
+}
+
+.table-right .value {
+    margin-top: 0.5vh;
+}
+
+@media screen and (max-width: 767px) {
+    .table-card {
+        grid-template-columns: 1fr 2fr;
+        align-items: start;
+    }
+
+    .table-left {
+        border-right: 0.3vh solid var(--background-color);
+        padding-right: 1.5vh;
+    }
+
+    .table-right {
+        padding-left: 1.5vh;
+    }
 }

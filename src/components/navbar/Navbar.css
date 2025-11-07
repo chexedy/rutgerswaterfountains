@@ -13,7 +13,7 @@
     border-bottom: 0.25em solid var(--text-color-one);
 }
 
-.title {
+.navbar-title {
     margin: 0;
     line-height: 1;
     font-size: calc(10vh - 4.5vh);
@@ -21,15 +21,15 @@
     white-space: nowrap;
 }
 
-.title span {
+.navbar-title span {
     color: var(--primary-color);
 }
 
-.title h1::after {
+.navbar-title h1::after {
     content: " Water Fountains";
 }
 
-.buttons {
+.navbar-buttons {
     display: flex;
     align-items: stretch;
     gap: 1vw;
@@ -37,23 +37,23 @@
     z-index: 10;
 }
 
-.buttons a {
+.navbar-buttons .navbar-github-href {
     display: inline-block;
     text-decoration: none;
 }
 
-.buttons button,
-.buttons a,
-.buttons-link,
-.theme-toggle {
+.navbar-buttons button,
+.navbar-buttons .navbar-github-href,
+.navbar-buttons-link,
+.navbar-theme-toggle {
     padding: 0.8vh 1.5vh;
     line-height: 1;
     box-sizing: border-box;
 }
 
-.buttons a,
-.buttons button,
-.buttons-link {
+.navbar-buttons .navbar-github-href,
+.navbar-buttons button,
+.navbar-buttons-link {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -68,14 +68,14 @@
     min-height: calc(3vh + 1.6vh);
 }
 
-.buttons a:active,
-.buttons-link:active,
-.theme-toggle:active {
+.navbar-github-href:active,
+.navbar-buttons-link:active,
+.navbar-theme-toggle:active {
     opacity: 0.85;
     transform: scale(1.05);
 }
 
-.theme-toggle {
+.navbar-theme-toggle {
     background-color: var(--primary-color);
     display: inline-flex;
     justify-content: center;
@@ -87,14 +87,14 @@
     transition: transform 0.1s ease, opacity 0.2s ease;
 }
 
-.theme-toggle svg {
+.navbar-theme-toggle svg {
     fill: var(--text-color-two);
     height: 1em;
     width: 1em;
     vertical-align: middle;
 }
 
-.hamburger {
+.navbar-hamburger {
     display: none;
     flex-direction: column;
     justify-content: space-around;
@@ -104,7 +104,7 @@
     cursor: pointer;
 }
 
-.hamburger .bar {
+.navbar-hamburger .navbar-bar {
     height: 0.3vh;
     width: 100%;
     background-color: var(--text-color-one);
@@ -112,15 +112,15 @@
 }
 
 @media screen and (max-width: 1024px) {
-    .title {
+    .navbar-title {
         font-size: calc(10vh - 6.5vh);
     }
 
-    .title h1::after {
+    .navbar-title h1::after {
         content: " Water Fountains";
     }
 
-    .buttons {
+    .navbar-buttons {
         align-items: center;
         display: none;
         position: absolute;
@@ -134,10 +134,10 @@
         border-left: 1px solid var(--text-color);
     }
 
-    .buttons a,
-    .buttons button,
-    .buttons-link,
-    .theme-toggle {
+    .navbar-buttons .navbar-github-href,
+    .navbar-buttons button,
+    .navbar-buttons-link,
+    .navbar-theme-toggle {
         width: 80%;
         height: 10%;
         font-size: 5vh;
@@ -145,12 +145,12 @@
         border-radius: 1vh;
     }
 
-    .buttons.open {
+    .navbar-buttons.open {
         display: flex;
         align-items: center;
     }
 
-    .hamburger {
+    .navbar-hamburger {
         display: flex;
         flex-direction: column;
         gap: 0.3vh;
