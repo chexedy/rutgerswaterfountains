@@ -2,6 +2,7 @@
     width: 100%;
     height: auto;
     padding-top: 15vh;
+    overflow: auto;
 }
 
 .profile-header-one::before {
@@ -33,6 +34,20 @@
     padding-right: 2.5vh;
 }
 
+.profile-title-toggle-button {
+    display: block;
+    background-color: var(--text-color-one);
+    color: var(--background-color);
+    margin-left: auto;
+    margin-right: auto;
+    width: 20%;
+    height: 5vh;
+    border-radius: 25px;
+    margin-top: 2.5vh;
+    margin-bottom: 2.5vh;
+    cursor: pointer;
+}
+
 .card-list {
     display: flex;
     flex-direction: column;
@@ -59,12 +74,30 @@
 }
 
 .label {
-    font-weight: 700;
-    font-size: 2vh;
+    font-weight: 800;
+    font-size: 2.5vh;
+}
+
+.table-button {
+    display: block;
+    background-color: var(--background-color);
+    color: var(--text-color-one);
+    margin-left: auto;
+    margin-right: auto;
+    width: 70%;
+    height: 5vh;
+    border-radius: 25px;
+    margin-top: 1vh;
+    cursor: pointer;
+}
+
+.table-button:active {
+    opacity: 0.85;
+    transform: scale(1.05);
 }
 
 .value {
-    font-size: 1.9vh;
+    font-size: 3vh;
 }
 
 .table-right .value {
@@ -84,5 +117,21 @@
 
     .table-right {
         padding-left: 1.5vh;
+    }
+
+    .table-button {
+        height: 3vh;
+    }
+
+    .profile-title-toggle-button {
+        width: 60%;
+    }
+
+    .label {
+        font-size: 1.75vh;
+    }
+
+    .value {
+        font-size: 2vh;
     }
 }

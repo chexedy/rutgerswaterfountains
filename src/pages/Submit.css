@@ -1,0 +1,19 @@
+.submit {
+    width: 100%;
+    height: auto;
+    padding-top: 15vh;
+    overflow: auto;
+}
+
+.submit-header-one::before {
+    content: "Submit ";
+    color: var(--primary-color);
+}
+
+.submit-header-two {
+    padding-top: 2.5vh;
+}
+
+.submit-header-three {
+    padding: 2.5vh;
+}

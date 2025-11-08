@@ -6,6 +6,30 @@ import { jwtDecode } from "jwt-decode";
 import { useTheme } from "../../context/ThemeContext";
 import { useAuth } from "../../context/AuthContext";
 
+async function addUser(token) {
+    try {
+        const response = await fetch("https://ruwaterfountains-api.ayaan7m.workers.dev/user", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            console.error("Failed to add user:", data.error);
+            return false;
+        }
+
+        return true;
+    } catch (err) {
+        console.error("Error calling /user:", err);
+        return false;
+    }
+}
+
 export default function SignIn() {
     const { theme } = useTheme();
     const { setUser, setToken } = useAuth();
@@ -20,31 +44,42 @@ export default function SignIn() {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
+    const handleSuccess = async (credentialResponse) => {
+        const jwt = credentialResponse.credential;
+        const decoded = jwtDecode(jwt);
+        const email = decoded.email;
+
+        if (!email.endsWith("@scarletmail.rutgers.edu")) {
+            setMessage(
+                "Invalid email. Please sign in with your ScarletMail (netid@scarletmail.rutgers.edu)."
+            );
+            googleLogout();
+            return;
+        }
+
+        const response = await addUser(jwt);
+        if (!response) {
+            setMessage(
+                "Invalid email. Please sign in with your ScarletMail (netid@scarletmail.rutgers.edu)."
+            );
+            googleLogout();
+            return;
+        }
+
+        setToken(jwt);
+        setUser({
+            email: decoded.email,
+            name: decoded.name,
+            picture: decoded.picture,
+        });
+    };
+
     return (
         <div>
             <h2 className="header-two signin-header">{message}</h2>
             <div className="google-login">
                 <GoogleLogin
-                    onSuccess={(credentialResponse) => {
-                        const jwt = credentialResponse.credential;
-                        const decoded = jwtDecode(jwt);
-                        const email = decoded.email;
-                        console.log(decoded);
-
-                        if (email.endsWith("@scarletmail.rutgers.edu")) {
-                            setMessage("Invalid email. Please sign in with your ScarletMail (netid@scarletmail.rutgers.edu).");
-                            googleLogout();
-                            return;
-                        }
-
-                        setToken(jwt);
-                        setUser({
-                            email: decoded.email,
-                            name: decoded.name,
-                            picture: decoded.picture,
-                        });
-
-                    }}
+                    onSuccess={handleSuccess}
                     onError={() => {
                         setMessage("Error signing in. Please try again and contact me on GitHub if the error persists.");
                     }}
