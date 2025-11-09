@@ -17,3 +17,16 @@
     cursor: pointer;
     z-index: 10;
 }
+
+.zoom-to-user {
+    position: absolute;
+    bottom: 2vh;
+    right: 2vh;
+    padding: 1rem 1rem;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    color: var(--background-color);
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 10;
+}

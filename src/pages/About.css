@@ -4,8 +4,56 @@
     padding-top: 15vh;
 }
 
-.about-header {
+.about-description {
+    margin-left: 5vh;
+    margin-right: 5vh;
     color: var(--text-color-one);
-    text-align: center;
-    font-size: 10vh;
+    font-size: 5vh;
+    text-align: left;
+    padding: 5vh;
+}
+
+.faq-list {
+    width: 60%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin: auto;
+    padding-top: 2.5vh;
+    gap: 2.5vh;
+}
+
+.faq-element {
+    width: 100%;
+    background-color: var(--text-color-one);
+    border-radius: 1rem;
+}
+
+.faq-question {
+    margin: 1vh;
+    color: var(--background-color);
+    font-size: 5vh;
+    text-align: left;
+    padding: 1vh;
+}
+
+.faq-answer {
+    margin: 1vh;
+    color: var(--background-color);
+    font-size: 3vh;
+    text-align: left;
+    padding: 1vh;
+}
+
+@media screen and (max-width: 767px) {
+    .about-description {
+        font-size: 3vh;
+        padding: 3vh;
+        margin-left: 2.5vh;
+        margin-right: 2.5vh;
+    }
+
+    .faq-list {
+        width: 80%;
+    }
 }

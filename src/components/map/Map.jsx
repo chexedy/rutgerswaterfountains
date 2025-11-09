@@ -10,6 +10,34 @@ export default function Map() {
     const mapContainer = useRef(null);
     const mapRef = useRef(null);
 
+    const ZoomToUserLocation = () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const userLngLat = [position.coords.longitude, position.coords.latitude];
+                    const bounds = mapRef.current.getMaxBounds();
+
+                    if (bounds && bounds.contains(userLngLat)) {
+                        mapRef.current.flyTo({
+                            center: userLngLat,
+                            zoom: 16,
+                            speed: 1.2,
+                            curve: 1
+                        });
+                    } else {
+                        console.log('User location is out of map bounds.');
+                    }
+                },
+                (error) => {
+                    console.error('Error getting user location:', error);
+                },
+                {
+                    enableHighAccuracy: true
+                }
+            );
+        }
+    }
+
     useEffect(() => {
         let protocol = new Protocol();
         maplibregl.addProtocol("pmtiles", protocol.tile);
@@ -22,6 +50,7 @@ export default function Map() {
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
+        console.log(params);
         if (params.has("selectMode")) {
             setSelectMode(true);
         }
@@ -59,7 +88,7 @@ export default function Map() {
         mapRef.current.on('load', function () {
             mapRef.current.addSource('ru-buildings', {
                 type: 'geojson',
-                data: '/src/util/ru_buildings.geojson'
+                data: '/ru_buildings.geojson'
             });
 
             mapRef.current.addLayer({
@@ -91,31 +120,7 @@ export default function Map() {
                 minzoom: 15
             });
 
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        const userLngLat = [position.coords.longitude, position.coords.latitude];
-                        const bounds = mapRef.current.getMaxBounds();
-
-                        if (bounds && bounds.contains(userLngLat)) {
-                            mapRef.current.flyTo({
-                                center: userLngLat,
-                                zoom: 16,
-                                speed: 1.2,
-                                curve: 1
-                            });
-                        } else {
-                            console.log('User location is out of map bounds.');
-                        }
-                    },
-                    (error) => {
-                        console.error('Error getting user location:', error);
-                    },
-                    {
-                        enableHighAccuracy: true
-                    }
-                );
-            }
+            ZoomToUserLocation();
         });
 
         const params = new URLSearchParams(window.location.search);
@@ -148,6 +153,12 @@ export default function Map() {
             {selectMode && (
                 <button className="return-to-submit" onClick={() => window.location.href = "/submit"}>
                     Return to Submit
+                </button>
+            )}
+
+            {!selectMode && (
+                <button className="zoom-to-user" onClick={ZoomToUserLocation}>
+                    📍
                 </button>
             )}
         </div>
