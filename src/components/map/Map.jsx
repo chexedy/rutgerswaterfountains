@@ -50,7 +50,6 @@ export default function Map() {
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
-        console.log(params);
         if (params.has("selectMode")) {
             setSelectMode(true);
         }
@@ -58,6 +57,7 @@ export default function Map() {
 
     useEffect(() => {
         if (mapRef.current) return;
+        const params = new URLSearchParams(window.location.search);
 
         let map_style = {
             "version": 8,
@@ -120,10 +120,35 @@ export default function Map() {
                 minzoom: 15
             });
 
-            ZoomToUserLocation();
-        });
+            if (params.has("viewMode")) {
+                const longitude = parseFloat(params.get("longitude"));
+                const latitude = parseFloat(params.get("latitude"));
+                const marker = new maplibregl.Marker({ color: "red" })
+                    .setLngLat([longitude, latitude])
+                    .addTo(mapRef.current);
 
-        const params = new URLSearchParams(window.location.search);
+                marker.getElement().addEventListener('click', () => {
+                    marker.remove();
+                });
+
+                mapRef.current.flyTo({
+                    center: [longitude, latitude],
+                    zoom: 18,
+                    speed: 1.2,
+                    curve: 1
+                });
+            } else {
+                mapRef.current.addControl(
+                    new maplibregl.GeolocateControl({
+                        positionOptions: {
+                            enableHighAccuracy: true
+                        },
+                        trackUserLocation: true
+                    })
+                );
+                ZoomToUserLocation();
+            }
+        });
 
         if (params.has("selectMode")) {
             let marker = null;

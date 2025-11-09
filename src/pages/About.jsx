@@ -7,7 +7,7 @@ export default function About() {
             <Navbar />
             <div className="about">
                 <h1 className="header-one">About</h1>
-                <h2 className="about-description">I live on the water fountains on campus as water is overpriced everywhere, so I decided to make a map that could hopefully help others find them as well.</h2>
+                <h2 className="about-description">I use the water fountains on campus daily since bottle water is overpriced everywhere, so I decided to make a map that could hopefully help others find them as well.</h2>
 
                 <h1 className="header-one">FAQ</h1>
                 <div className="faq-list">

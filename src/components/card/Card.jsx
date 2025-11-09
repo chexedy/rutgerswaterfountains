@@ -2,6 +2,10 @@ import "./Card.css";
 import { SQLtoLocalTime } from "../../util/time.js";
 
 export default function Card({ id, type, campus, time, description, longitude, latitude }) {
+    const ViewOnMap = () => {
+        window.location.href = "/?viewMode&latitude=" + latitude + "&longitude=" + longitude;
+    }
+
     return (
         <div className="table-card">
             <div className="table-left">
@@ -27,7 +31,7 @@ export default function Card({ id, type, campus, time, description, longitude, l
                 <span className="label">Description</span>
                 <p className="value">{description}</p>
 
-                <button className="table-button">
+                <button className="table-button" onClick={ViewOnMap}>
                     View on Map
                 </button>
             </div>

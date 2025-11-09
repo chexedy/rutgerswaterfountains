@@ -19,6 +19,7 @@ export function AuthProvider({ children }) {
                     email: decoded.email,
                     name: decoded.name,
                     picture: decoded.picture,
+                    join_date: localStorage.getItem("join_date"),
                 });
             } else {
                 localStorage.removeItem("googleToken");
@@ -34,6 +35,7 @@ export function AuthProvider({ children }) {
             email: decoded.email,
             name: decoded.name,
             picture: decoded.picture,
+            join_date: localStorage.getItem("join_date"),
         });
         setToken(jwt);
         localStorage.setItem("googleToken", jwt);

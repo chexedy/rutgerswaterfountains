@@ -106,6 +106,7 @@ export default function Profile() {
                                 <div className="card-list">
                                     {approvedRequests.map(request => (
                                         <Card
+                                            key={request.id}
                                             id={request.id}
                                             type={request.fountain_type}
                                             campus={request.campus}
@@ -131,6 +132,7 @@ export default function Profile() {
                                 <div className="card-list">
                                     {submittedRequests.map(request => (
                                         <Card
+                                            key={request.id}
                                             id={request.id}
                                             type={request.fountain_type}
                                             campus={request.campus}

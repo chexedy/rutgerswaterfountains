@@ -4,6 +4,7 @@ import { Home } from "./pages"
 import { Submit } from "./pages"
 import { Profile } from "./pages"
 import { About } from "./pages"
+import { Admin } from "./pages"
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       <Route path="/submit" element={<Submit />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/about" element={<About />} />
+      <Route path="/admin" element={<Admin />} />
     </Routes>
   );
 }

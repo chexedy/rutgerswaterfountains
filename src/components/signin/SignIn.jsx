@@ -75,6 +75,7 @@ export default function SignIn() {
             join_date: response.results.join_date
         });
 
+        localStorage.setItem("join_date", response.results.join_date);
         localStorage.setItem("googleToken", jwt);
     };
 

@@ -1,0 +1,37 @@
+.approve-button {
+    display: block;
+    background-color: var(--primary-color);
+    color: var(--text-color-one);
+    margin-left: auto;
+    margin-right: auto;
+    width: 70%;
+    height: 5vh;
+    border-radius: 25px;
+    margin-top: 1vh;
+    cursor: pointer;
+}
+
+.approve-button:active {
+    opacity: 0.85;
+    transform: scale(1.05);
+}
+
+.admin-table-card {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 1vh;
+    background-color: var(--text-color-one);
+    color: var(--background-color);
+    padding: 1.5vh;
+    border-radius: 1vh;
+    margin: 1.5vh auto;
+    width: 85%;
+    word-break: break-word;
+}
+
+@media screen and (max-width: 767px) {
+    .approve-button {
+        width: 80%;
+        height: 3vh;
+    }
+}

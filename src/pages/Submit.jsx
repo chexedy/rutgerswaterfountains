@@ -48,6 +48,8 @@ export default function Submit() {
     const [editId, setEditId] = useState(null)
 
     const submitFountain = async () => {
+        if (!confirm("Are you sure you want to submit this fountain request?")) return;
+
         const requiredFields = ["type", "campus", "description", "longitude", "latitude"];
         for (const field of requiredFields) {
             const value = formData[field];
@@ -125,7 +127,7 @@ export default function Submit() {
                                 <option className="submit-option" value="Cook/Douglass">Cook/Douglass</option>
                             </select>
 
-                            <label className="submit-label" htmlFor="description" >Fountain Description</label>
+                            <label className="submit-label" htmlFor="description" autocomplete="off">Fountain Description</label>
                             <h4>Briefly describe where the fountain is located. Include any nearby signs or buildings as a reference (max 150 characters).</h4>
                             <input
                                 className="submit-select"
@@ -145,6 +147,7 @@ export default function Submit() {
                                 Pick Location on Map
                             </button>
                             <input
+                                autocomplete="off"
                                 className="submit-select"
                                 name="longitude"
                                 type="number"
@@ -153,6 +156,7 @@ export default function Submit() {
                                 onChange={handleChange}
                             />
                             <input
+                                autocomplete="off"
                                 className="submit-select"
                                 name="latitude"
                                 type="number"

@@ -15,8 +15,6 @@
     --background-color: rgb(200, 200, 200);
     /* Rutgers Red */
     --primary-color: rgb(204, 0, 51);
-    --secondary-color: rgb(102, 102, 102);
-    --accent-color: rgb(204, 0, 51);
 
     --heading-font: "Inter", sans-serif;
     --heading-weight: 800,
@@ -25,9 +23,6 @@
 :root[data-theme="dark"] {
     --text-color-one: rgb(200, 200, 200);
     --background-color: rgb(15, 15, 15);
-    --primary-color: rgb(255, 51, 102);
-    --secondary-color: rgb(153, 153, 153);
-    --accent-color: rgb(255, 51, 102);
 }
 
 * {

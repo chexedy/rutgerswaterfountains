@@ -7,6 +7,7 @@ export default function SignOut() {
     const { signOut } = useAuth();
 
     const handleLogout = () => {
+        localStorage.removeItem("join_date");
         googleLogout();
         signOut();
     }

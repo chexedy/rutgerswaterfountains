@@ -3,3 +3,4 @@ export { default as Navbar } from "./navbar";
 export { default as SignIn } from "./signin";
 export { default as SignOut } from "./signout";
 export { default as Card } from "./card";
+export { default as AdminCard } from "./admincard";
