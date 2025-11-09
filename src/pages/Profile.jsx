@@ -5,10 +5,14 @@ import { useState, useEffect } from "react";
 import { Navbar } from "../components";
 import { SignIn } from "../components";
 import { SignOut } from "../components";
+import { Card } from "../components"
+
 import { useAuth } from "../context/AuthContext";
+import { SQLtoLocalTime } from "../util/time";
 
 export default function Profile() {
-    const { user } = useAuth();
+    const { user, token } = useAuth();
+
     const [openApproved, setApprovedOpen] = useState(() => {
         const stored = localStorage.getItem("openApproved");
         return stored ? stored === "true" : true;
@@ -17,7 +21,6 @@ export default function Profile() {
     useEffect(() => {
         localStorage.setItem("openApproved", openApproved);
     }, [openApproved]);
-
     const toggleApproved = () => setApprovedOpen(prev => !prev);
 
     const [openSubmitted, setSubmittedOpen] = useState(() => {
@@ -28,8 +31,55 @@ export default function Profile() {
     useEffect(() => {
         localStorage.setItem("openSubmitted", openSubmitted);
     }, [openApproved]);
-
     const toggleSubmitted = () => setSubmittedOpen(prev => !prev);
+
+    const [approvedRequests, setApprovedRequests] = useState([]);
+    useEffect(() => {
+        async function updateApprovedRequests() {
+            if (token) {
+                const response = await fetch("https://ruwaterfountains-api.ayaan7m.workers.dev/approved", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    console.error("Failed to fetch approved requests");
+                    return;
+                }
+
+                const data = await response.json();
+                setApprovedRequests(data.results);
+            }
+        }
+        updateApprovedRequests();
+    }, [token]);
+
+    const [submittedRequests, setSubmittedRequests] = useState([]);
+    useEffect(() => {
+        async function updateSubmittedRequests() {
+            if (token) {
+                const response = await fetch("https://ruwaterfountains-api.ayaan7m.workers.dev/submitted", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    console.error("Failed to fetch submitted requests");
+                    return;
+                }
+
+                const data = await response.json();
+                setSubmittedRequests(data.results);
+            }
+        }
+        updateSubmittedRequests();
+    }, [token]);
 
     return (
         <div>
@@ -49,92 +99,52 @@ export default function Profile() {
                         <button className="profile-title-toggle-button" onClick={toggleApproved}>
                             {openApproved ? "Hide" : "Show"}
                         </button>
-                        <h3 className="header-three profile-header-three" id="no-approved-requests" style={{ display: "none" }}>You have no approved requests :(</h3>
 
                         {openApproved && (
-                            <div className="card-list" id="approved-requests-list" style={{ display: "flex" }}>
-                                <div className="table-card">
-                                    <div className="table-left">
-                                        <div className="field">
-                                            <span className="label">ID</span>
-                                            <span className="value">1</span>
-                                        </div>
-                                        <div className="field">
-                                            <span className="label">Type</span>
-                                            <span className="value">Modern</span>
-                                        </div>
-                                        <div className="field">
-                                            <span className="label">Campus</span>
-                                            <span className="value">Busch</span>
-                                        </div>
-                                        <div className="field">
-                                            <span className="label">Approved</span>
-                                            <span className="value">8:00 PM</span>
-                                        </div>
-                                    </div>
-
-                                    <div className="table-right">
-                                        <span className="label">Description</span>
-                                        <p className="value">
-                                            Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
-                                            Aenean massa. Cum sociis natoque penatibus et magnis dis p.
-                                        </p>
-
-                                        <button className="table-button">
-                                            View on Map
-                                        </button>
-                                    </div>
+                            <div>
+                                <h3 className="header-three profile-header-three" id="no-approved-requests" style={{ display: approvedRequests.length === 0 ? "block" : "none" }}>You have no approved requests :(</h3>
+                                <div className="card-list">
+                                    {approvedRequests.map(request => (
+                                        <Card
+                                            id={request.id}
+                                            type={request.fountain_type}
+                                            campus={request.campus}
+                                            time={request.time_approved}
+                                            description={request.description}
+                                            longitude={request.longitude}
+                                            latitude={request.latitude}
+                                        />
+                                    ))}
                                 </div>
                             </div>
                         )}
 
                         <h2 className="header-two profile-header-two">Pending Requests</h2>
-                        <h3 className="header-three profile-header-three">These requests vary between new submissions and edits to existing fountains.</h3>
 
                         <button className="profile-title-toggle-button" onClick={toggleSubmitted}>
                             {openSubmitted ? "Hide" : "Show"}
                         </button>
 
-                        <h3 className="header-three profile-header-three" id="no-pending-requests" style={{ display: "none" }}>You have no currently pending requests.</h3>
-
                         {openSubmitted && (
-                            <div className="card-list" id="pending-requests-list">
-                                <div className="table-card">
-                                    <div className="table-left">
-                                        <div className="field">
-                                            <span className="label">ID</span>
-                                            <span className="value">1</span>
-                                        </div>
-                                        <div className="field">
-                                            <span className="label">Type</span>
-                                            <span className="value">Modern</span>
-                                        </div>
-                                        <div className="field">
-                                            <span className="label">Campus</span>
-                                            <span className="value">Busch</span>
-                                        </div>
-                                        <div className="field">
-                                            <span className="label">Submitted</span>
-                                            <span className="value">8:00 PM</span>
-                                        </div>
-                                    </div>
-
-                                    <div className="table-right">
-                                        <span className="label">Description</span>
-                                        <p className="value">
-                                            Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
-                                            Aenean massa. Cum sociis natoque penatibus et magnis dis p.
-                                        </p>
-
-                                        <button className="table-button">
-                                            View on Map
-                                        </button>
-                                    </div>
+                            <div>
+                                <h3 className="header-three profile-header-three" id="no-pending-requests" style={{ display: submittedRequests.length === 0 ? "block" : "none" }}>You have no currently pending requests.</h3>
+                                <div className="card-list">
+                                    {submittedRequests.map(request => (
+                                        <Card
+                                            id={request.id}
+                                            type={request.fountain_type}
+                                            campus={request.campus}
+                                            time={request.time_submitted}
+                                            description={request.description}
+                                            longitude={request.longitude}
+                                            latitude={request.latitude}
+                                        />
+                                    ))}
                                 </div>
                             </div>
                         )}
 
-                        <h3 className="header-three profile-header-three">Contributor Since: 11/6/2025</h3>
+                        <h3 className="header-three profile-header-three">Joined: {SQLtoLocalTime(user.join_date)}</h3>
 
                         <div className="google-logout">
                             <SignOut />

@@ -11,12 +11,18 @@ export function AuthProvider({ children }) {
         const savedToken = localStorage.getItem("googleToken");
         if (savedToken) {
             const decoded = jwtDecode(savedToken);
-            setUser({
-                email: decoded.email,
-                name: decoded.name,
-                picture: decoded.picture,
-            });
-            setToken(savedToken);
+
+            const now = Date.now() / 1000;
+            if (decoded.exp && decoded.exp > now) {
+                setToken(savedToken);
+                setUser({
+                    email: decoded.email,
+                    name: decoded.name,
+                    picture: decoded.picture,
+                });
+            } else {
+                localStorage.removeItem("googleToken");
+            }
         }
     }, []);
 

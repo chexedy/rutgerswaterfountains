@@ -17,3 +17,100 @@
 .submit-header-three {
     padding: 2.5vh;
 }
+
+.submit-form {
+    width: 30%;
+    margin: 2rem auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 2rem;
+    background-color: var(--text-color-one);
+    color: var(--background-color);
+    border-radius: 1.5rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
+}
+
+.submit-label {
+    font-size: 1.3rem;
+    font-weight: 700;
+    text-align: left;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.submit-select {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+    border-radius: 0.8rem;
+    border: 2px solid var(--background-color);
+    background-color: var(--text-color-one);
+    color: var(--background-color);
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, transform 0.1s ease;
+}
+
+.submit-select:focus {
+    outline: none;
+    transform: scale(1.01);
+    color: var(--background-color);
+}
+
+.submit-option {
+    background-color: var(--text-color-one);
+    color: var(--background-color);
+}
+
+.pick-location-button {
+    display: block;
+    background-color: var(--background-color);
+    color: var(--text-color-one);
+    margin-left: auto;
+    margin-right: auto;
+    width: 70%;
+    height: 5vh;
+    border-radius: 25px;
+    cursor: pointer;
+}
+
+.pick-location-button:active {
+    opacity: 0.85;
+    transform: scale(1.05);
+}
+
+.submit-fountain {
+    display: block;
+    background-color: var(--primary-color);
+    color: var(--text-color-two);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    width: 20%;
+    height: 5vh;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: larger;
+}
+
+.submit-header-response {
+    padding: 2.5vh;
+}
+
+@media screen and (max-width: 1024px) {
+    .submit-form {
+        width: 80%;
+    }
+
+    .submit-fountain {
+        width: 80%;
+        margin-bottom: 20vh;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .submit-form {
+        width: 70%;
+    }
+}

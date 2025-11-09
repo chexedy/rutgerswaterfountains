@@ -23,10 +23,10 @@ async function addUser(token) {
             return false;
         }
 
-        return true;
+        return data;
     } catch (err) {
         console.error("Error calling /user:", err);
-        return false;
+        return null;
     }
 }
 
@@ -58,6 +58,7 @@ export default function SignIn() {
         }
 
         const response = await addUser(jwt);
+        console.log(response);
         if (!response) {
             setMessage(
                 "Invalid email. Please sign in with your ScarletMail (netid@scarletmail.rutgers.edu)."
@@ -71,7 +72,10 @@ export default function SignIn() {
             email: decoded.email,
             name: decoded.name,
             picture: decoded.picture,
+            join_date: response.results.join_date
         });
+
+        localStorage.setItem("googleToken", jwt);
     };
 
     return (
