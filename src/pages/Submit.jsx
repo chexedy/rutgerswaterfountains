@@ -11,11 +11,12 @@ export default function Submit() {
 
     const [formData, setFormData] = useState(() => {
         const saved = localStorage.getItem("currentSubmission");
+        console.log("Initializing form data from localStorage:", saved);
         return saved
             ? JSON.parse(saved)
             : {
-                type: "",
-                campus: "",
+                type: "drink",
+                campus: "College Avenue",
                 description: "",
                 longitude: "",
                 latitude: "",
@@ -25,10 +26,15 @@ export default function Submit() {
     useEffect(() => {
         const saved = localStorage.getItem("currentSubmission");
         if (saved) {
-            setFormData(JSON.parse(saved));
-            console.log("Loaded saved submission data from localStorage.");
+            const parsed = JSON.parse(saved);
+            setFormData((prev) => ({
+                ...prev,
+                ...parsed,
+            }));
+            console.log("Merged saved submission data from localStorage.");
         }
     }, []);
+
 
     useEffect(() => {
         localStorage.setItem("currentSubmission", JSON.stringify(formData));
@@ -41,6 +47,7 @@ export default function Submit() {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+        console.log(`Updating form field ${name} to value: ${value}`);
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
@@ -51,6 +58,7 @@ export default function Submit() {
         if (!confirm("Are you sure you want to submit this fountain request?")) return;
 
         const requiredFields = ["type", "campus", "description", "longitude", "latitude"];
+        console.log(formData);
         for (const field of requiredFields) {
             const value = formData[field];
             if (value === undefined || value === null || (typeof value === "string" && value.trim() === "")) {
@@ -127,7 +135,7 @@ export default function Submit() {
                                 <option className="submit-option" value="Cook/Douglass">Cook/Douglass</option>
                             </select>
 
-                            <label className="submit-label" htmlFor="description" autocomplete="off">Fountain Description</label>
+                            <label className="submit-label" htmlFor="description" autoComplete="off">Fountain Description</label>
                             <h4>Briefly describe where the fountain is located. Include any nearby signs or buildings as a reference (max 150 characters).</h4>
                             <input
                                 className="submit-select"
@@ -147,19 +155,21 @@ export default function Submit() {
                                 Pick Location on Map
                             </button>
                             <input
-                                autocomplete="off"
+                                autoComplete="off"
                                 className="submit-select"
                                 name="longitude"
                                 type="number"
+                                maxLength="20"
                                 placeholder="Longitude"
                                 value={formData.longitude}
                                 onChange={handleChange}
                             />
                             <input
-                                autocomplete="off"
+                                autoComplete="off"
                                 className="submit-select"
                                 name="latitude"
                                 type="number"
+                                maxLength="20"
                                 placeholder="Latitude"
                                 value={formData.latitude}
                                 onChange={handleChange}

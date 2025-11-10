@@ -1,12 +1,17 @@
 import { useEffect, useRef, useState } from "react";
+import { createRoot } from "react-dom/client";
+
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { Protocol } from "pmtiles";
 import * as basemaps from "@protomaps/basemaps";
 
 import "./Map.css"
+import Fountain from "../fountain";
+import { useTheme } from "../../context/ThemeContext";
 
 export default function Map() {
+    const { theme } = useTheme();
     const mapContainer = useRef(null);
     const mapRef = useRef(null);
 
@@ -38,6 +43,30 @@ export default function Map() {
         }
     }
 
+    const loadFountains = async () => {
+        const response = await fetch("https://ruwaterfountains-api.ayaan7m.workers.dev/fountains", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        });
+
+        if (!response.ok) {
+            alert("Failed to fetch fountain data, try refreshing. If the error persists, contact me on Github.");
+            return;
+        }
+
+        const data = await response.json();
+        console.log(data);
+        data.requests.forEach((fountain) => {
+            const marker = document.createElement("div");
+            createRoot(marker).render(<Fountain hasBottleReFill={fountain.type === "refill" ? true : false} theme={theme} />);
+            new maplibregl.Marker({ element: marker })
+                .setLngLat([fountain.longitude, fountain.latitude])
+                .addTo(mapRef.current);
+        });
+    }
+
     useEffect(() => {
         let protocol = new Protocol();
         maplibregl.addProtocol("pmtiles", protocol.tile);
@@ -59,11 +88,10 @@ export default function Map() {
         if (mapRef.current) return;
         const params = new URLSearchParams(window.location.search);
 
-        let map_style = {
+        const map_style = {
             "version": 8,
             "text-font": ["Ubuntu Regular", "Ubuntu Medium", "Ubuntu Bold", "Ubuntu Light"],
             "glyphs": "https://map.whereisnjtransit.com/glyphs/{fontstack}/{range}.pbf",
-            "sprite": "https://protomaps.github.io/basemaps-assets/sprites/v4/light",
             "sources": {
                 "protomaps": {
                     "type": "vector",
@@ -82,7 +110,8 @@ export default function Map() {
             container: mapContainer.current,
             center: [-74.450655, 40.4943125],
             style: map_style,
-            maxBounds: bounds
+            maxBounds: bounds,
+            attributionControl: false,
         });
 
         mapRef.current.on('load', function () {
@@ -123,11 +152,15 @@ export default function Map() {
             if (params.has("viewMode")) {
                 const longitude = parseFloat(params.get("longitude"));
                 const latitude = parseFloat(params.get("latitude"));
-                const marker = new maplibregl.Marker({ color: "red" })
+                const type = params.get("type");
+
+                const marker = document.createElement("div");
+                createRoot(marker).render(<Fountain hasBottleReFill={type === "refill" ? true : false} theme={theme} />);
+                new maplibregl.Marker({ element: marker })
                     .setLngLat([longitude, latitude])
                     .addTo(mapRef.current);
 
-                marker.getElement().addEventListener('click', () => {
+                marker.addEventListener('click', () => {
                     marker.remove();
                 });
 
@@ -138,13 +171,15 @@ export default function Map() {
                     curve: 1
                 });
             } else {
+                loadFountains();
                 mapRef.current.addControl(
                     new maplibregl.GeolocateControl({
                         positionOptions: {
                             enableHighAccuracy: true
                         },
                         trackUserLocation: true
-                    })
+                    }),
+                    'bottom-right'
                 );
                 ZoomToUserLocation();
             }
@@ -171,6 +206,17 @@ export default function Map() {
         }
     }, []);
 
+    // useEffect(() => {
+    //     const map_style = mapRef.current.getStyle();
+    //     console.log(map_style);
+    //     if (theme === "dark") {
+    //         map_style.layers = basemaps.layers("protomaps", basemaps.namedFlavor("dark"), { lang: "en" });
+    //     } else {
+    //         map_style.layers = basemaps.layers("protomaps", basemaps.namedFlavor("light"), { lang: "en" });
+    //     }
+    //     mapRef.current.setStyle(map_style);
+    // }, [theme]);
+
     return (
         <div>
             <div ref={mapContainer} className="mapContainer" />
@@ -178,12 +224,6 @@ export default function Map() {
             {selectMode && (
                 <button className="return-to-submit" onClick={() => window.location.href = "/submit"}>
                     Return to Submit
-                </button>
-            )}
-
-            {!selectMode && (
-                <button className="zoom-to-user" onClick={ZoomToUserLocation}>
-                    📍
                 </button>
             )}
         </div>
