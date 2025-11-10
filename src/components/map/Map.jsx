@@ -60,7 +60,7 @@ export default function Map() {
         console.log(data);
         data.requests.forEach((fountain) => {
             const marker = document.createElement("div");
-            createRoot(marker).render(<Fountain hasBottleReFill={fountain.type === "refill" ? true : false} theme={theme} />);
+            createRoot(marker).render(<Fountain hasBottleReFill={fountain.fountain_type === "refill" ? true : false} theme={theme} />);
             new maplibregl.Marker({ element: marker })
                 .setLngLat([fountain.longitude, fountain.latitude])
                 .addTo(mapRef.current);
