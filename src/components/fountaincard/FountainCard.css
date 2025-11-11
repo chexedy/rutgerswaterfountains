@@ -1,0 +1,44 @@
+.fountain-card {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 100;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 1vh;
+    background-color: var(--text-color-one);
+    color: var(--background-color);
+    padding: 1.5vh;
+    border-radius: 1vh;
+    width: 50%;
+    word-break: break-word;
+}
+
+.close-fountain-card {
+    color: var(--background-color) !important;
+    grid-column: 1 / -1;
+    justify-self: center;
+    margin-top: 1vh;
+    cursor: pointer;
+}
+
+.button-row {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: center;
+    gap: 5rem;
+    margin: 1vh;
+}
+
+@media screen and (max-device-width: 767px) {
+    .fountain-card {
+        width: 90%;
+    }
+}
+
+@media screen and (min-device-width: 768px) and (max-width: 1024px) {
+    .fountain-card {
+        width: 90%;
+    }
+}

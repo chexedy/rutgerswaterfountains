@@ -8,3 +8,8 @@
     justify-content: center;
     font-size: 4vh;
 }
+
+.marker:active {
+    opacity: 0.85;
+    transform: scale(1.25);
+}

@@ -18,6 +18,12 @@
     padding: 2.5vh;
 }
 
+.edit-warning {
+    color: var(--background-color);
+    text-align: center;
+    font-size: 2.5vh;
+}
+
 .submit-form {
     width: 30%;
     margin: 2rem auto;

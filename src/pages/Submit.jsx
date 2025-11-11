@@ -1,64 +1,121 @@
 import "./Submit.css";
-
 import { useState, useEffect } from "react";
 
 import { Navbar } from "../components";
 import { SignIn } from "../components";
+
 import { useAuth } from "../context/AuthContext";
+import { useFountains } from "../context/FountainContext.jsx";
 
 export default function Submit() {
+    const { fountains, setFountains } = useFountains();
     const { user, token } = useAuth();
+
+    const [isEdit, setIsEdit] = useState(() => {
+        const saved = localStorage.getItem("isEdit");
+        return saved ? JSON.parse(saved) : false;
+    });
+
+    const [editId, setEditId] = useState(() => {
+        const saved = localStorage.getItem("editId");
+        return saved ? parseInt(saved) : null;
+    });
+
+    const [originalFountain, setOriginalFountain] = useState(null);
 
     const [formData, setFormData] = useState(() => {
         const saved = localStorage.getItem("currentSubmission");
-        console.log("Initializing form data from localStorage:", saved);
-        return saved
-            ? JSON.parse(saved)
-            : {
-                type: "drink",
-                campus: "College Avenue",
-                description: "",
-                longitude: "",
-                latitude: "",
-            };
+        const savedCoords = localStorage.getItem("coordinates");
+        return {
+            fountain_type: saved ? JSON.parse(saved).fountain_type : "drink",
+            campus: saved ? JSON.parse(saved).campus : "College Avenue",
+            description: saved ? JSON.parse(saved).description : "",
+            longitude: savedCoords ? JSON.parse(savedCoords).longitude : "",
+            latitude: savedCoords ? JSON.parse(savedCoords).latitude : "",
+            target_fountain_id: isEdit ? editId : null
+        };
     });
 
     useEffect(() => {
-        const saved = localStorage.getItem("currentSubmission");
-        if (saved) {
-            const parsed = JSON.parse(saved);
-            setFormData((prev) => ({
-                ...prev,
-                ...parsed,
-            }));
-            console.log("Merged saved submission data from localStorage.");
+        async function fountainsEffect() {
+            const params = new URLSearchParams(window.location.search);
+            const urlEditId = params.has("editId") ? parseInt(params.get("editId")) : null;
+            const storedEditId = localStorage.getItem("editId");
+
+            const id = urlEditId ?? (storedEditId ? parseInt(storedEditId) : null);
+
+            if (id) {
+                setEditId(id);
+                setIsEdit(true);
+
+                const fountain = fountains.find(f => f.id === id);
+                if (fountain) {
+                    const { fountain_type, campus, description, longitude, latitude } = fountain;
+                    setFormData({
+                        fountain_type: fountain.fountain_type,
+                        campus: fountain.campus,
+                        description: fountain.description,
+                        longitude: fountain.longitude,
+                        latitude: fountain.latitude,
+                        target_fountain_id: id
+                    });
+
+                    setOriginalFountain({
+                        fountain_type: fountain.fountain_type,
+                        campus: fountain.campus,
+                        description: fountain.description,
+                        longitude: fountain.longitude,
+                        latitude: fountain.latitude
+                    });
+                } else {
+                    const response = await fetch("https://ruwaterfountains-api.ayaan7m.workers.dev/fountains", {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                        }
+                    });
+
+                    if (!response.ok) {
+                        alert("Failed to fetch fountain data, try refreshing. If the error persists, contact me on Github.");
+                        return;
+                    }
+
+                    const data = await response.json();
+                    setFountains(data.requests);
+                }
+            }
         }
-    }, []);
+        fountainsEffect();
+    }, [fountains]);
 
 
     useEffect(() => {
-        localStorage.setItem("currentSubmission", JSON.stringify(formData));
+        const { fountain_type, campus, description } = formData;
+        localStorage.setItem("currentSubmission", JSON.stringify({ fountain_type, campus, description }));
+        const { longitude, latitude } = formData;
+        localStorage.setItem("coordinates", JSON.stringify({ longitude, latitude }));
     }, [formData]);
 
+    useEffect(() => {
+        if (editId) localStorage.setItem("editId", editId);
+        localStorage.setItem("isEdit", JSON.stringify(isEdit));
+    }, [editId, isEdit]);
+
     const getLatLog = () => {
-        localStorage.setItem("currentSubmission", JSON.stringify(formData));
+        const { longitude, latitude } = formData;
+        localStorage.setItem("coordinates", JSON.stringify({ longitude, latitude }));
         window.location.href = "/?selectMode";
     }
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        console.log(`Updating form field ${name} to value: ${value}`);
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
-
-    const [isEdit, setIsEdit] = useState(false);
-    const [editId, setEditId] = useState(null)
 
     const submitFountain = async () => {
         if (!confirm("Are you sure you want to submit this fountain request?")) return;
 
-        const requiredFields = ["type", "campus", "description", "longitude", "latitude"];
-        console.log(formData);
+        const requiredFields = ["fountain_type", "campus", "description", "longitude", "latitude"];
         for (const field of requiredFields) {
             const value = formData[field];
             if (value === undefined || value === null || (typeof value === "string" && value.trim() === "")) {
@@ -69,17 +126,26 @@ export default function Submit() {
 
         if (isEdit) {
             if (!editId) {
-                alert("Cannot submit edit: missing edit ID.");
+                alert("Edit ID missing — cannot submit as edit!");
                 return;
-            } else {
-                formData.append("request_type", "edit");
-                formData.append("target_fountain_id", editId);
             }
-        } else {
-            formData.request_type = "new";
+            const fieldsToCheck = ["fountain_type", "campus", "description", "longitude", "latitude"];
+            const isUnchanged = fieldsToCheck.every(
+                field => formData[field] === originalFountain[field]
+            );
+            if (isUnchanged) {
+                alert("You haven't made any changes. Please modify at least one field before submitting an edit.");
+                return;
+            }
         }
 
+        const body = {
+            ...formData,
+            request_type: isEdit ? "edit" : "add",
+            target_fountain_id: isEdit ? editId : null
+        };
         console.log("Submitting fountain with data:", formData);
+        return;
 
         try {
             const response = await fetch("https://ruwaterfountains-api.ayaan7m.workers.dev/submission", {
@@ -88,11 +154,7 @@ export default function Submit() {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`
                 },
-                body: JSON.stringify({
-                    ...formData,
-                    request_type: isEdit ? "edit" : "add",
-                    target_fountain_id: isEdit ? editId : null
-                })
+                body: JSON.stringify(body)
             });
 
             const data = await response.json();
@@ -103,6 +165,7 @@ export default function Submit() {
 
             console.log("Submission successful, ID:", data.id);
             localStorage.removeItem("currentSubmission");
+            localStorage.removeItem("coordinates");
             setFormData({ type: "", campus: "", description: "", longitude: "", latitude: "" });
             document.querySelector(".submit-header-response").innerText = `Submission successful! Your submission ID is ${data.id}.`;
         } catch (err) {
@@ -121,8 +184,21 @@ export default function Submit() {
                     <div>
                         <h3 className="header-three submit-header-three">Please make sure all information is correct, and that there are no spelling mistakes or grammatical errors. Thank you!</h3>
                         <form className="submit-form">
-                            <label className="submit-label" htmlFor="type">What is the Fountain Type?</label>
-                            <select className="submit-select" name="type" value={formData.type} onChange={handleChange}>
+                            {isEdit && (
+                                <h3 className="edit-warning">
+                                    ⚠️ You are editing an existing fountain. If this is incorrect, please click "Cancel Edit" to start a new submission.
+                                    <button type="button" className="pick-location-button" onClick={() => {
+                                        setIsEdit(false);
+                                        setEditId(null);
+                                        setFormData({ fountain_type: "drink", campus: "College Avenue", description: "", longitude: "", latitude: "" });
+                                        localStorage.removeItem("isEdit");
+                                        localStorage.removeItem("editId");
+                                    }} style={{ marginTop: "1vh" }}>Cancel Edit</button>
+                                </h3>
+                            )}
+
+                            <label className="submit-label" htmlFor="fountain_type">What is the Fountain Type?</label>
+                            <select className="submit-select" name="fountain_type" value={formData.fountain_type} onChange={handleChange}>
                                 <option className="submit-option" value="drink">Drinking Only</option>
                                 <option className="submit-option" value="refill">Drinking + Bottle Refill</option>
                             </select>
@@ -152,7 +228,7 @@ export default function Submit() {
                                 className="pick-location-button"
                                 onClick={getLatLog}
                             >
-                                Pick Location on Map
+                                Pick Location On Map
                             </button>
                             <input
                                 autoComplete="off"

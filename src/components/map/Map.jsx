@@ -7,13 +7,20 @@ import { Protocol } from "pmtiles";
 import * as basemaps from "@protomaps/basemaps";
 
 import "./Map.css"
-import Fountain from "../fountain";
+import Fountain from "../fountain/Fountain.jsx";
+import FountainCard from "../fountaincard";
+
 import { useTheme } from "../../context/ThemeContext";
+import { useFountains } from "../../context/FountainContext.jsx";
 
 export default function Map() {
+    const { fountains, setFountains } = useFountains();
     const { theme } = useTheme();
+
     const mapContainer = useRef(null);
     const mapRef = useRef(null);
+
+    const [activeFountain, setActiveFountain] = useState(null);
 
     const ZoomToUserLocation = () => {
         if (navigator.geolocation) {
@@ -57,13 +64,18 @@ export default function Map() {
         }
 
         const data = await response.json();
-        console.log(data);
+        console.log("Fetched fountain data:", data);
+        setFountains(data.requests);
         data.requests.forEach((fountain) => {
             const marker = document.createElement("div");
             createRoot(marker).render(<Fountain hasBottleReFill={fountain.fountain_type === "refill" ? true : false} theme={theme} />);
             new maplibregl.Marker({ element: marker })
                 .setLngLat([fountain.longitude, fountain.latitude])
                 .addTo(mapRef.current);
+
+            marker.addEventListener('click', () => {
+                setActiveFountain(fountain);
+            });
         });
     }
 
@@ -186,21 +198,40 @@ export default function Map() {
         });
 
         if (params.has("selectMode")) {
-            let marker = null;
+            const marker = new maplibregl.Marker({ color: "red" });
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const userLngLat = [position.coords.longitude, position.coords.latitude];
+                        const bounds = mapRef.current.getMaxBounds();
+
+                        if (bounds && bounds.contains(userLngLat)) {
+                            marker
+                                .setLngLat(userLngLat)
+                                .addTo(mapRef.current);
+                        }
+                    },
+                    (error) => {
+                        console.error('Error getting user location:', error);
+                    },
+                    {
+                        enableHighAccuracy: true
+                    }
+                );
+            }
+
             mapRef.current.on("click", (e) => {
                 const { lng, lat } = e.lngLat;
 
-                const saved = JSON.parse(localStorage.getItem("currentSubmission")) || {};
+                const saved = {};
                 saved.longitude = lng;
                 saved.latitude = lat;
-                localStorage.setItem("currentSubmission", JSON.stringify(saved));
+                localStorage.setItem("coordinates", JSON.stringify(saved));
 
                 if (!marker) {
-                    marker = new maplibregl.Marker({ color: "red" })
-                        .setLngLat([lng, lat])
-                        .addTo(mapRef.current);
+                    marker.setLngLat([lng, lat]).addTo(mapRef.current);
                 } else {
-                    marker.setLngLat([lng, lat]);
+                    marker.setLngLat([lng, lat]).addTo(mapRef.current);
                 }
             });
         }
@@ -225,6 +256,13 @@ export default function Map() {
                 <button className="return-to-submit" onClick={() => window.location.href = "/submit"}>
                     Return to Submit
                 </button>
+            )}
+
+            {activeFountain && (
+                <FountainCard
+                    {...activeFountain}
+                    onClose={() => setActiveFountain(null)}
+                />
             )}
         </div>
     );
