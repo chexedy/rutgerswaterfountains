@@ -145,7 +145,6 @@ export default function Submit() {
             target_fountain_id: isEdit ? editId : null
         };
         console.log("Submitting fountain with data:", formData);
-        return;
 
         try {
             const response = await fetch("https://ruwaterfountains-api.ayaan7m.workers.dev/submission", {
