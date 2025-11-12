@@ -38,7 +38,7 @@ export default function Profile() {
         async function updateApprovedRequests() {
             if (token) {
                 const response = await fetch("https://ruwaterfountains-api.ayaan7m.workers.dev/approved", {
-                    method: "POST",
+                    method: "GET",
                     headers: {
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${token}`
@@ -62,7 +62,7 @@ export default function Profile() {
         async function updateSubmittedRequests() {
             if (token) {
                 const response = await fetch("https://ruwaterfountains-api.ayaan7m.workers.dev/submitted", {
-                    method: "POST",
+                    method: "GET",
                     headers: {
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${token}`
