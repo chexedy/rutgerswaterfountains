@@ -12,6 +12,7 @@ import FountainCard from "../fountaincard";
 
 import { useTheme } from "../../context/ThemeContext";
 import { useFountains } from "../../context/FountainContext.jsx";
+import { data } from "react-router-dom";
 
 export default function Map() {
     const { fountains, setFountains } = useFountains();
@@ -64,11 +65,10 @@ export default function Map() {
         }
 
         const data = await response.json();
-        console.log("Fetched fountain data:", data);
         setFountains(data.requests);
         data.requests.forEach((fountain) => {
             const marker = document.createElement("div");
-            createRoot(marker).render(<Fountain hasBottleReFill={fountain.fountain_type === "refill" ? true : false} theme={theme} />);
+            createRoot(marker).render(<Fountain hasBottleReFill={fountain.fountain_type === "refill" ? true : false} isPreview={false} />);
             new maplibregl.Marker({ element: marker })
                 .setLngLat([fountain.longitude, fountain.latitude])
                 .addTo(mapRef.current);
@@ -88,6 +88,7 @@ export default function Map() {
     }, []);
 
     const [selectMode, setSelectMode] = useState(false);
+    const [viewMode, setViewMode] = useState(false);
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
@@ -132,14 +133,30 @@ export default function Map() {
                 data: '/ru_buildings.geojson'
             });
 
+            mapRef.current.addSource('ru-parking', {
+                type: 'geojson',
+                data: '/ru_parking.geojson'
+            })
+
             mapRef.current.addLayer({
                 id: 'ru-building-outline',
                 type: 'line',
                 source: 'ru-buildings',
                 layout: {},
                 paint: {
-                    'line-color': '#333333',
+                    'line-color': '#CD1C18',
                     'line-width': 1
+                }
+            });
+
+            mapRef.current.addLayer({
+                id: 'ru-parking-outline',
+                type: 'line',
+                source: 'ru-parking',
+                layout: {},
+                paint: {
+                    'line-color': '#4682B4',
+                    'line-width': 1,
                 }
             });
 
@@ -161,20 +178,35 @@ export default function Map() {
                 minzoom: 15
             });
 
+            mapRef.current.addLayer({
+                id: 'ru-parking-labels',
+                type: 'symbol',
+                source: 'ru-parking',
+                layout: {
+                    'text-field': ['get', 'Lot_Name'],
+                    'text-font': ['Ubuntu Bold'],
+                    'text-size': 12,
+                    'text-anchor': 'center'
+                },
+                paint: {
+                    'text-color': '#333333',
+                    'text-halo-color': '#ffffff',
+                    'text-halo-width': 1
+                },
+                minzoom: 15
+            });
+
             if (params.has("viewMode")) {
+                setViewMode(true);
                 const longitude = parseFloat(params.get("longitude"));
                 const latitude = parseFloat(params.get("latitude"));
                 const type = params.get("type");
 
                 const marker = document.createElement("div");
-                createRoot(marker).render(<Fountain hasBottleReFill={type === "refill" ? true : false} theme={theme} />);
+                createRoot(marker).render(<Fountain hasBottleReFill={type === "refill" ? true : false} isPreview={true} />);
                 new maplibregl.Marker({ element: marker })
                     .setLngLat([longitude, latitude])
                     .addTo(mapRef.current);
-
-                marker.addEventListener('click', () => {
-                    marker.remove();
-                });
 
                 mapRef.current.flyTo({
                     center: [longitude, latitude],
@@ -198,7 +230,11 @@ export default function Map() {
         });
 
         if (params.has("selectMode")) {
-            const marker = new maplibregl.Marker({ color: "red" });
+            const fountain_type = params.get("selectMode");
+            let marker = document.createElement("div");
+            createRoot(marker).render(<Fountain hasBottleReFill={fountain_type === "refill" ? true : false} isPreview={true} />);
+            marker = new maplibregl.Marker({ element: marker });
+
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
@@ -237,17 +273,6 @@ export default function Map() {
         }
     }, []);
 
-    // useEffect(() => {
-    //     const map_style = mapRef.current.getStyle();
-    //     console.log(map_style);
-    //     if (theme === "dark") {
-    //         map_style.layers = basemaps.layers("protomaps", basemaps.namedFlavor("dark"), { lang: "en" });
-    //     } else {
-    //         map_style.layers = basemaps.layers("protomaps", basemaps.namedFlavor("light"), { lang: "en" });
-    //     }
-    //     mapRef.current.setStyle(map_style);
-    // }, [theme]);
-
     return (
         <div>
             <div ref={mapContainer} className="mapContainer" />
@@ -255,6 +280,12 @@ export default function Map() {
             {selectMode && (
                 <button className="return-to-submit" onClick={() => window.location.href = "/submit"}>
                     Return to Submit
+                </button>
+            )}
+
+            {viewMode && (
+                <button className="return-to-submit" onClick={() => window.location.href = "/profile"}>
+                    Return to Profile
                 </button>
             )}
 

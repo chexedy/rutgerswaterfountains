@@ -1,6 +1,9 @@
 import "./About.css";
 import { Navbar } from "../components";
 
+import { FaGithub } from "react-icons/fa6";
+import { FaLinkedin } from "react-icons/fa";
+
 export default function About() {
     return (
         <div>
@@ -26,6 +29,11 @@ export default function About() {
                 </div>
 
                 <h2 className="about-description">Special thanks to the dude at RU Facilities who uploaded the data on all the building outlines and their names for public use.</h2>
+
+                <div className="socials-list">
+                    <a className="socials-button" href="https://github.com/chexedy/rutgerswaterfountains" target="_blank" rel="noopener noreferrer"><FaGithub /></a>
+                    <a className="socials-button" href="https://www.linkedin.com/in/ayaan7m/" target="_blank" rel="noopener noreferrer"><FaLinkedin /></a>
+                </div>
             </div>
         </div>
     )

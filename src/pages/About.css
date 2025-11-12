@@ -45,7 +45,35 @@
     padding: 1vh;
 }
 
-@media screen and (max-width: 767px) {
+.socials-list {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    margin-top: 2vh;
+    margin-bottom: 15vh;
+}
+
+.socials-button {
+    color: var(--text-color-two);
+    background-color: var(--primary-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 5rem;
+    aspect-ratio: 1 / 1;
+    text-decoration: none;
+    font-size: 3.5rem;
+    transition: transform 0.2s ease;
+    border-radius: 25%;
+}
+
+.socials-button:active {
+    opacity: 0.85;
+    transform: scale(1.05);
+}
+
+@media screen and (max-width: 1024px) {
     .about-description {
         font-size: 3vh;
         padding: 3vh;
@@ -55,5 +83,10 @@
 
     .faq-list {
         width: 80%;
+    }
+
+    .socials-button {
+        width: 7rem;
+        font-size: 5rem;
     }
 }

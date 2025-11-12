@@ -50,7 +50,6 @@ export default function Submit() {
 
                 const fountain = fountains.find(f => f.id === id);
                 if (fountain) {
-                    const { fountain_type, campus, description, longitude, latitude } = fountain;
                     setFormData({
                         fountain_type: fountain.fountain_type,
                         campus: fountain.campus,
@@ -104,7 +103,7 @@ export default function Submit() {
     const getLatLog = () => {
         const { longitude, latitude } = formData;
         localStorage.setItem("coordinates", JSON.stringify({ longitude, latitude }));
-        window.location.href = "/?selectMode";
+        window.location.href = "/?selectMode=" + formData.fountain_type;
     }
 
     const handleChange = (e) => {

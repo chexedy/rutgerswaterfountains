@@ -37,13 +37,7 @@
     z-index: 10;
 }
 
-.navbar-buttons .navbar-github-href {
-    display: inline-block;
-    text-decoration: none;
-}
-
 .navbar-buttons button,
-.navbar-buttons .navbar-github-href,
 .navbar-buttons-link,
 .navbar-theme-toggle {
     padding: 0.8vh 1.5vh;
@@ -51,7 +45,6 @@
     box-sizing: border-box;
 }
 
-.navbar-buttons .navbar-github-href,
 .navbar-buttons button,
 .navbar-buttons-link {
     display: inline-flex;
@@ -68,7 +61,6 @@
     min-height: calc(3vh + 1.6vh);
 }
 
-.navbar-github-href:active,
 .navbar-buttons-link:active,
 .navbar-theme-toggle:active {
     opacity: 0.85;
@@ -134,7 +126,6 @@
         border-left: 1px solid var(--text-color);
     }
 
-    .navbar-buttons .navbar-github-href,
     .navbar-buttons button,
     .navbar-buttons-link,
     .navbar-theme-toggle {

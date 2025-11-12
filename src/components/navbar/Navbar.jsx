@@ -2,7 +2,6 @@ import "./Navbar.css";
 import { Link } from "react-router-dom";
 
 import { MdLightMode, MdDarkMode } from "react-icons/md";
-import { FaGithub } from "react-icons/fa6";
 
 import { useState } from "react";
 import { useTheme } from "../../context/ThemeContext";
@@ -32,10 +31,6 @@ export default function Navbar() {
                 <button className="navbar-theme-toggle" onClick={toggleTheme} aria-label="Toggle Light or Dark Mode">
                     {theme === "light" ? <MdLightMode /> : <MdDarkMode />}
                 </button>
-
-                <a className="navbar-github-href" href="https://github.com/chexedy/rutgerswaterfountains" target="_blank" rel="noopener noreferrer">
-                    <FaGithub />
-                </a>
             </div>
         </div>
     );

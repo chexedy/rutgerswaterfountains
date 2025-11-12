@@ -48,11 +48,11 @@ export default function AdminCard({ id, net_id, request_type, fountain_type, cam
                 </div>
                 <div className="field">
                     <span className="label">Request Type</span>
-                    <span className="value">{request_type}</span>
+                    <span className="value">{request_type === "add" ? "New" : "Edit"}</span>
                 </div>
                 <div className="field">
                     <span className="label">Fountain Type</span>
-                    <span className="value">{fountain_type}</span>
+                    <span className="value">{fountain_type === "drink" ? "Drinking Only" : "Drinking + Bottle Refill"}</span>
                 </div>
                 <div className="field">
                     <span className="label">Campus</span>

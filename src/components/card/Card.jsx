@@ -1,9 +1,9 @@
 import "./Card.css";
 import { SQLtoLocalTime } from "../../util/time.js";
 
-export default function Card({ id, type, campus, time, description, longitude, latitude }) {
+export default function Card({ id, fountain_type, campus, time, description, longitude, latitude }) {
     const ViewOnMap = () => {
-        window.location.href = "/?viewMode&latitude=" + latitude + "&longitude=" + longitude + "&type=" + type;
+        window.location.href = "/?viewMode&latitude=" + latitude + "&longitude=" + longitude + "&type=" + fountain_type;
     }
 
     return (
@@ -15,7 +15,7 @@ export default function Card({ id, type, campus, time, description, longitude, l
                 </div>
                 <div className="field">
                     <span className="label">Type</span>
-                    <span className="value">{type}</span>
+                    <span className="value">{fountain_type === "drink" ? "Drinking Only" : "Drinking + Bottle Refill"}</span>
                 </div>
                 <div className="field">
                     <span className="label">Campus</span>
