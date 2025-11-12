@@ -242,6 +242,7 @@ export default function Map() {
                         const bounds = mapRef.current.getMaxBounds();
 
                         if (bounds && bounds.contains(userLngLat)) {
+                            localStorage.setItem("coordinates", JSON.stringify({ longitude: position.coords.longitude, latitude: position.coords.latitude }));
                             marker
                                 .setLngLat(userLngLat)
                                 .addTo(mapRef.current);
