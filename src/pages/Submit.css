@@ -101,6 +101,7 @@
 }
 
 .submit-header-response {
+    margin-bottom: 20vh;
     padding: 2.5vh;
 }
 
@@ -111,7 +112,6 @@
 
     .submit-fountain {
         width: 80%;
-        margin-bottom: 20vh;
     }
 }
 

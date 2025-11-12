@@ -50,12 +50,24 @@ export default function Submit() {
 
                 const fountain = fountains.find(f => f.id === id);
                 if (fountain) {
+                    const savedCoords = localStorage.getItem("coordinates");
+                    let longitude = fountain.longitude;
+                    let latitude = fountain.latitude;
+
+                    if (savedCoords) {
+                        const parsed = JSON.parse(savedCoords);
+                        if (parsed.longitude && parsed.latitude) {
+                            longitude = parsed.longitude;
+                            latitude = parsed.latitude;
+                        }
+                    }
+
                     setFormData({
                         fountain_type: fountain.fountain_type,
                         campus: fountain.campus,
                         description: fountain.description,
-                        longitude: fountain.longitude,
-                        latitude: fountain.latitude,
+                        longitude,
+                        latitude,
                         target_fountain_id: id
                     });
 
@@ -87,7 +99,6 @@ export default function Submit() {
         fountainsEffect();
     }, [fountains]);
 
-
     useEffect(() => {
         const { fountain_type, campus, description } = formData;
         localStorage.setItem("currentSubmission", JSON.stringify({ fountain_type, campus, description }));
@@ -102,7 +113,6 @@ export default function Submit() {
 
     const getLatLog = () => {
         const { longitude, latitude } = formData;
-        localStorage.setItem("coordinates", JSON.stringify({ longitude, latitude }));
         window.location.href = "/?selectMode=" + formData.fountain_type;
     }
 
@@ -128,8 +138,10 @@ export default function Submit() {
                 alert("Edit ID missing — cannot submit as edit!");
                 return;
             }
-            const fieldsToCheck = ["fountain_type", "campus", "description", "longitude", "latitude"];
-            const isUnchanged = fieldsToCheck.every(
+
+            console.log(formData);
+            console.log(originalFountain);
+            const isUnchanged = requiredFields.every(
                 field => formData[field] === originalFountain[field]
             );
             if (isUnchanged) {
