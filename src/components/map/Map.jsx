@@ -66,8 +66,8 @@ export default function Map() {
                 'text-anchor': 'center'
             },
             paint: {
-                'text-color': '#333333',
-                'text-halo-color': '#ffffff',
+                'text-color': theme === "light" ? '#333333' : '#ffffff',
+                'text-halo-color': theme === "light" ? '#ffffff' : '#333333',
                 'text-halo-width': 1
             },
             minzoom: 15
@@ -84,8 +84,8 @@ export default function Map() {
                 'text-anchor': 'center'
             },
             paint: {
-                'text-color': '#333333',
-                'text-halo-color': '#ffffff',
+                'text-color': theme === "light" ? '#333333' : '#ffffff',
+                'text-halo-color': theme === "light" ? '#ffffff' : '#333333',
                 'text-halo-width': 1
             },
             minzoom: 15
@@ -226,6 +226,8 @@ export default function Map() {
         });
 
         mapRef.current.on('load', function () {
+            loadLayers();
+
             if (params.has("viewMode")) {
                 setViewMode(true);
                 const longitude = parseFloat(params.get("longitude"));
