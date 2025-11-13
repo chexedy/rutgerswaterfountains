@@ -23,73 +23,85 @@ export default function Map() {
     const [activeFountain, setActiveFountain] = useState(null);
 
     const loadLayers = () => {
-        mapRef.current.addSource('ru-buildings', {
-            type: 'geojson',
-            data: '/ru_buildings.geojson'
-        });
+        if (!mapRef.current.getSource('ru-buildings')) {
+            mapRef.current.addSource('ru-buildings', {
+                type: 'geojson',
+                data: '/ru_buildings.geojson'
+            });
+        }
 
-        mapRef.current.addSource('ru-parking', {
-            type: 'geojson',
-            data: '/ru_parking.geojson'
-        })
+        if (!mapRef.current.getSource('ru-parking')) {
+            mapRef.current.addSource('ru-parking', {
+                type: 'geojson',
+                data: '/ru_parking.geojson'
+            })
+        }
 
-        mapRef.current.addLayer({
-            id: 'ru-building-outline',
-            type: 'line',
-            source: 'ru-buildings',
-            layout: {},
-            paint: {
-                'line-color': '#CD1C18',
-                'line-width': 1
-            }
-        });
+        if (!mapRef.current.getLayer('ru-building-outline')) {
+            mapRef.current.addLayer({
+                id: 'ru-building-outline',
+                type: 'line',
+                source: 'ru-buildings',
+                layout: {},
+                paint: {
+                    'line-color': '#CD1C18',
+                    'line-width': 1
+                }
+            });
+        }
 
-        mapRef.current.addLayer({
-            id: 'ru-parking-outline',
-            type: 'line',
-            source: 'ru-parking',
-            layout: {},
-            paint: {
-                'line-color': '#4682B4',
-                'line-width': 1,
-            }
-        });
+        if (!mapRef.current.getLayer('ru-parking-outline')) {
+            mapRef.current.addLayer({
+                id: 'ru-parking-outline',
+                type: 'line',
+                source: 'ru-parking',
+                layout: {},
+                paint: {
+                    'line-color': '#4682B4',
+                    'line-width': 1,
+                }
+            });
+        }
 
-        mapRef.current.addLayer({
-            id: 'ru-building-labels',
-            type: 'symbol',
-            source: 'ru-buildings',
-            layout: {
-                'text-field': ['get', 'BldgName'],
-                'text-font': ['Ubuntu Bold'],
-                'text-size': 12,
-                'text-anchor': 'center'
-            },
-            paint: {
-                'text-color': theme === "light" ? '#333333' : '#ffffff',
-                'text-halo-color': theme === "light" ? '#ffffff' : '#333333',
-                'text-halo-width': 1
-            },
-            minzoom: 15
-        });
+        if (!mapRef.current.getLayer('ru-building-labels')) {
+            mapRef.current.addLayer({
+                id: 'ru-building-labels',
+                type: 'symbol',
+                source: 'ru-buildings',
+                layout: {
+                    'text-field': ['get', 'BldgName'],
+                    'text-font': ['Ubuntu Bold'],
+                    'text-size': 12,
+                    'text-anchor': 'center'
+                },
+                paint: {
+                    'text-color': theme === "light" ? '#333333' : '#ffffff',
+                    'text-halo-color': theme === "light" ? '#ffffff' : '#333333',
+                    'text-halo-width': 1
+                },
+                minzoom: 15
+            });
+        }
 
-        mapRef.current.addLayer({
-            id: 'ru-parking-labels',
-            type: 'symbol',
-            source: 'ru-parking',
-            layout: {
-                'text-field': ['get', 'Lot_Name'],
-                'text-font': ['Ubuntu Bold'],
-                'text-size': 12,
-                'text-anchor': 'center'
-            },
-            paint: {
-                'text-color': theme === "light" ? '#333333' : '#ffffff',
-                'text-halo-color': theme === "light" ? '#ffffff' : '#333333',
-                'text-halo-width': 1
-            },
-            minzoom: 15
-        });
+        if (!mapRef.current.getLayer('ru-parking-labels')) {
+            mapRef.current.addLayer({
+                id: 'ru-parking-labels',
+                type: 'symbol',
+                source: 'ru-parking',
+                layout: {
+                    'text-field': ['get', 'Lot_Name'],
+                    'text-font': ['Ubuntu Bold'],
+                    'text-size': 12,
+                    'text-anchor': 'center'
+                },
+                paint: {
+                    'text-color': theme === "light" ? '#333333' : '#ffffff',
+                    'text-halo-color': theme === "light" ? '#ffffff' : '#333333',
+                    'text-halo-width': 1
+                },
+                minzoom: 15
+            });
+        }
     }
 
     const ZoomToUserLocation = () => {
@@ -173,11 +185,11 @@ export default function Map() {
         const newStyle = {
             version: 8,
             "text-font": ["Ubuntu Regular", "Ubuntu Medium", "Ubuntu Bold", "Ubuntu Light"],
-            glyphs: "https://map.whereisnjtransit.com/glyphs/{fontstack}/{range}.pbf",
+            glyphs: "https://assets.chexedy.com/glyphs/{fontstack}/{range}.pbf",
             sources: {
                 protomaps: {
                     type: "vector",
-                    url: "pmtiles://https://map.whereisnjtransit.com/whereisnjtransit.pmtiles",
+                    url: "pmtiles://https://assets.chexedy.com/whereisnjtransit.pmtiles",
                 },
             },
             layers: basemaps.layers(
@@ -198,11 +210,11 @@ export default function Map() {
         const map_style = {
             "version": 8,
             "text-font": ["Ubuntu Regular", "Ubuntu Medium", "Ubuntu Bold", "Ubuntu Light"],
-            "glyphs": "https://map.whereisnjtransit.com/glyphs/{fontstack}/{range}.pbf",
+            "glyphs": "https://assets.chexedy.com/glyphs/{fontstack}/{range}.pbf",
             "sources": {
                 "protomaps": {
                     "type": "vector",
-                    "url": "pmtiles://https://map.whereisnjtransit.com/whereisnjtransit.pmtiles",
+                    "url": "pmtiles://https://assets.chexedy.com/whereisnjtransit.pmtiles",
                 }
             },
             "layers": basemaps.layers(
