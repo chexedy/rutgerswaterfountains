@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useEffectEvent, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 
 import maplibregl from "maplibre-gl";
@@ -12,16 +12,85 @@ import FountainCard from "../fountaincard";
 
 import { useTheme } from "../../context/ThemeContext";
 import { useFountains } from "../../context/FountainContext.jsx";
-import { data } from "react-router-dom";
 
 export default function Map() {
-    const { fountains, setFountains } = useFountains();
+    const { setFountains } = useFountains();
     const { theme } = useTheme();
 
     const mapContainer = useRef(null);
     const mapRef = useRef(null);
 
     const [activeFountain, setActiveFountain] = useState(null);
+
+    const loadLayers = () => {
+        mapRef.current.addSource('ru-buildings', {
+            type: 'geojson',
+            data: '/ru_buildings.geojson'
+        });
+
+        mapRef.current.addSource('ru-parking', {
+            type: 'geojson',
+            data: '/ru_parking.geojson'
+        })
+
+        mapRef.current.addLayer({
+            id: 'ru-building-outline',
+            type: 'line',
+            source: 'ru-buildings',
+            layout: {},
+            paint: {
+                'line-color': '#CD1C18',
+                'line-width': 1
+            }
+        });
+
+        mapRef.current.addLayer({
+            id: 'ru-parking-outline',
+            type: 'line',
+            source: 'ru-parking',
+            layout: {},
+            paint: {
+                'line-color': '#4682B4',
+                'line-width': 1,
+            }
+        });
+
+        mapRef.current.addLayer({
+            id: 'ru-building-labels',
+            type: 'symbol',
+            source: 'ru-buildings',
+            layout: {
+                'text-field': ['get', 'BldgName'],
+                'text-font': ['Ubuntu Bold'],
+                'text-size': 12,
+                'text-anchor': 'center'
+            },
+            paint: {
+                'text-color': '#333333',
+                'text-halo-color': '#ffffff',
+                'text-halo-width': 1
+            },
+            minzoom: 15
+        });
+
+        mapRef.current.addLayer({
+            id: 'ru-parking-labels',
+            type: 'symbol',
+            source: 'ru-parking',
+            layout: {
+                'text-field': ['get', 'Lot_Name'],
+                'text-font': ['Ubuntu Bold'],
+                'text-size': 12,
+                'text-anchor': 'center'
+            },
+            paint: {
+                'text-color': '#333333',
+                'text-halo-color': '#ffffff',
+                'text-halo-width': 1
+            },
+            minzoom: 15
+        });
+    }
 
     const ZoomToUserLocation = () => {
         if (navigator.geolocation) {
@@ -89,6 +158,7 @@ export default function Map() {
 
     const [selectMode, setSelectMode] = useState(false);
     const [viewMode, setViewMode] = useState(false);
+    const [viewModeAdmin, setViewModeAdmin] = useState(false);
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
@@ -96,6 +166,30 @@ export default function Map() {
             setSelectMode(true);
         }
     }, []);
+
+    useEffect(() => {
+        if (!mapRef.current) return;
+
+        const newStyle = {
+            version: 8,
+            "text-font": ["Ubuntu Regular", "Ubuntu Medium", "Ubuntu Bold", "Ubuntu Light"],
+            glyphs: "https://map.whereisnjtransit.com/glyphs/{fontstack}/{range}.pbf",
+            sources: {
+                protomaps: {
+                    type: "vector",
+                    url: "pmtiles://https://map.whereisnjtransit.com/whereisnjtransit.pmtiles",
+                },
+            },
+            layers: basemaps.layers(
+                "protomaps",
+                basemaps.namedFlavor(theme === "light" ? "light" : "dark"),
+                { lang: "en" }
+            ),
+        };
+
+        mapRef.current.setStyle(newStyle);
+        mapRef.current.once('styledata', () => loadLayers());
+    }, [theme]);
 
     useEffect(() => {
         if (mapRef.current) return;
@@ -111,7 +205,11 @@ export default function Map() {
                     "url": "pmtiles://https://map.whereisnjtransit.com/whereisnjtransit.pmtiles",
                 }
             },
-            "layers": basemaps.layers("protomaps", basemaps.namedFlavor("light"), { lang: "en" })
+            "layers": basemaps.layers(
+                "protomaps",
+                basemaps.namedFlavor(theme === "light" ? "light" : "dark"),
+                { lang: "en" }
+            ),
         }
 
         const bounds = [
@@ -128,76 +226,26 @@ export default function Map() {
         });
 
         mapRef.current.on('load', function () {
-            mapRef.current.addSource('ru-buildings', {
-                type: 'geojson',
-                data: '/ru_buildings.geojson'
-            });
-
-            mapRef.current.addSource('ru-parking', {
-                type: 'geojson',
-                data: '/ru_parking.geojson'
-            })
-
-            mapRef.current.addLayer({
-                id: 'ru-building-outline',
-                type: 'line',
-                source: 'ru-buildings',
-                layout: {},
-                paint: {
-                    'line-color': '#CD1C18',
-                    'line-width': 1
-                }
-            });
-
-            mapRef.current.addLayer({
-                id: 'ru-parking-outline',
-                type: 'line',
-                source: 'ru-parking',
-                layout: {},
-                paint: {
-                    'line-color': '#4682B4',
-                    'line-width': 1,
-                }
-            });
-
-            mapRef.current.addLayer({
-                id: 'ru-building-labels',
-                type: 'symbol',
-                source: 'ru-buildings',
-                layout: {
-                    'text-field': ['get', 'BldgName'],
-                    'text-font': ['Ubuntu Bold'],
-                    'text-size': 12,
-                    'text-anchor': 'center'
-                },
-                paint: {
-                    'text-color': '#333333',
-                    'text-halo-color': '#ffffff',
-                    'text-halo-width': 1
-                },
-                minzoom: 15
-            });
-
-            mapRef.current.addLayer({
-                id: 'ru-parking-labels',
-                type: 'symbol',
-                source: 'ru-parking',
-                layout: {
-                    'text-field': ['get', 'Lot_Name'],
-                    'text-font': ['Ubuntu Bold'],
-                    'text-size': 12,
-                    'text-anchor': 'center'
-                },
-                paint: {
-                    'text-color': '#333333',
-                    'text-halo-color': '#ffffff',
-                    'text-halo-width': 1
-                },
-                minzoom: 15
-            });
-
             if (params.has("viewMode")) {
                 setViewMode(true);
+                const longitude = parseFloat(params.get("longitude"));
+                const latitude = parseFloat(params.get("latitude"));
+                const type = params.get("type");
+
+                const marker = document.createElement("div");
+                createRoot(marker).render(<Fountain hasBottleReFill={type === "refill" ? true : false} isPreview={true} />);
+                new maplibregl.Marker({ element: marker })
+                    .setLngLat([longitude, latitude])
+                    .addTo(mapRef.current);
+
+                mapRef.current.flyTo({
+                    center: [longitude, latitude],
+                    zoom: 18,
+                    speed: 1.2,
+                    curve: 1
+                });
+            } else if (params.has("viewModeAdmin")) {
+                setViewModeAdmin(true);
                 const longitude = parseFloat(params.get("longitude"));
                 const latitude = parseFloat(params.get("latitude"));
                 const type = params.get("type");
@@ -287,6 +335,12 @@ export default function Map() {
             {viewMode && (
                 <button className="return-to-submit" onClick={() => window.location.href = "/profile"}>
                     Return to Profile
+                </button>
+            )}
+
+            {viewModeAdmin && (
+                <button className="return-to-submit" onClick={() => window.location.href = "/admin"}>
+                    Return to Admin
                 </button>
             )}
 

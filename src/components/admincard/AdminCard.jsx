@@ -6,7 +6,7 @@ export default function AdminCard({ id, net_id, request_type, fountain_type, cam
     const { token } = useAuth();
 
     const viewOnMap = () => {
-        window.location.href = "/?viewMode&latitude=" + latitude + "&longitude=" + longitude;
+        window.location.href = "/?viewModeAdmin&latitude=" + latitude + "&longitude=" + longitude;
     }
 
     const approveRequest = async (approved) => {
